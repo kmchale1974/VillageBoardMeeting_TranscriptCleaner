@@ -19,14 +19,16 @@
     "Resident"
   ],
   "aliases": {
-    "Palmiter": "Village Trustee Linda Palmiter",
-    "Chavez": "Village Trustee Jose (Joe) Chavez",
-    "Clancy": "Village Trustee Brian A. Clancy Sr.",
-    "Richards": "Village Trustee Dave Richards",
-    "Griffin": "Village Trustee Ken Griffin",
-    "Aguirre": "Village Trustee Lourdes (Lou) Aguirre",
     "Mayor Noak": "Mayor John D. Noak",
+    "Mayor Noack": "Mayor John D. Noak",
     "Clerk Holloway": "Village Clerk Dr. Bernice E. Holloway",
+    "Trustee Palmiter": "Village Trustee Linda Palmiter",
+    "Trustee Chavez": "Village Trustee Jose (Joe) Chavez",
+    "Trustee Clancy": "Village Trustee Brian A. Clancy Sr.",
+    "Trustee Richards": "Village Trustee Dave Richards",
+    "Trustee Griffin": "Village Trustee Ken Griffin",
+    "Trustee Aguirre": "Village Trustee Lourdes (Lou) Aguirre",
+    "Mr. Vogel": "Village Attorney Rich Vogel",
     "Rich Vogel": "Village Attorney Rich Vogel"
   }
 }
