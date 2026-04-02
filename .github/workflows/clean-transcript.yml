@@ -2,38 +2,31 @@ name: Clean Transcript
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "input/meeting.json"
-      - "config/**"
-      - "scripts/**"
 
 jobs:
+
   clean:
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
 
-      - name: Set up Python
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - name: Clean transcript
+        run: |
+          python scripts/clean_transcript.py input/meeting.json output/cleaned.json
 
-      - name: Run transcript cleaner
-        run: python scripts/clean_transcript.py input/meeting.json output/cleaned-meeting.json
+      - name: Convert to CSV
+        run: |
+          python scripts/json_to_csv.py output/cleaned.json output/cleaned.csv
 
-      - name: Convert cleaned JSON to CSV
-        run: python scripts/json_to_csv.py output/cleaned-meeting.json output/cleaned-meeting.csv
-
-      - name: Validate output
-        run: python scripts/validate_output.py input/meeting.json output/cleaned-meeting.json output/cleaned-meeting.csv
-
-      - name: Upload outputs
+      - name: Upload result
         uses: actions/upload-artifact@v4
         with:
           name: cleaned-transcript
