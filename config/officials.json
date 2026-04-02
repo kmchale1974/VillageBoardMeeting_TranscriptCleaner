@@ -1,0 +1,32 @@
+{
+  "officials": [
+    "Mayor John D. Noak",
+    "Village Clerk Dr. Bernice E. Holloway",
+    "Village Trustee Linda Palmiter",
+    "Village Trustee Jose (Joe) Chavez",
+    "Village Trustee Brian A. Clancy Sr.",
+    "Village Trustee Dave Richards",
+    "Village Trustee Ken Griffin",
+    "Village Trustee Lourdes (Lou) Aguirre",
+    "Village Manager Dawn Caldwell",
+    "Finance Director Christi Jacobson",
+    "Fire Chief Kent Adams",
+    "Police Chief Brant Hromadka",
+    "Public Works Director Chris Drey",
+    "Director of Parks and Recreation Kelly Rajzer",
+    "Village Attorney Rich Vogel",
+    "Group",
+    "Resident"
+  ],
+  "aliases": {
+    "Palmiter": "Village Trustee Linda Palmiter",
+    "Chavez": "Village Trustee Jose (Joe) Chavez",
+    "Clancy": "Village Trustee Brian A. Clancy Sr.",
+    "Richards": "Village Trustee Dave Richards",
+    "Griffin": "Village Trustee Ken Griffin",
+    "Aguirre": "Village Trustee Lourdes (Lou) Aguirre",
+    "Mayor Noak": "Mayor John D. Noak",
+    "Clerk Holloway": "Village Clerk Dr. Bernice E. Holloway",
+    "Rich Vogel": "Village Attorney Rich Vogel"
+  }
+}
