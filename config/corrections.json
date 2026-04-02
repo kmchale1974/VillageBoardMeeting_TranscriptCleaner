@@ -1,0 +1,21 @@
+{
+  "text_replacements": {
+    "Palmer": "Palmiter",
+    "Romeovile": "Romeoville",
+    "Romoville": "Romeoville",
+    "Noack": "Noak",
+    "Vogler": "Vogel",
+    "Geary": "Aguirre",
+    "Gary": "Aguirre",
+    "Fruitville": "Aguirre",
+    "Royals": "Romeoville"
+  },
+  "vote_replacements": {
+    "I": "Aye",
+    "Eye": "Aye",
+    "A": "Aye",
+    "Hi": "Aye",
+    "Na": "Nay",
+    "Nah": "Nay"
+  }
+}
