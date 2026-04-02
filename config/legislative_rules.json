@@ -1,0 +1,19 @@
+{
+  "patterns": [
+    {
+      "type": "resolution",
+      "regex": "(?i)resolution\\s+26[,\\s-]*(\\d{4})",
+      "replacement": "Resolution 26-\\1"
+    },
+    {
+      "type": "ordinance",
+      "regex": "(?i)ordinance\\s+26[,\\s-]*(\\d{4})",
+      "replacement": "Ordinance 26-\\1"
+    },
+    {
+      "type": "schedule",
+      "regex": "(?i)schedule\\s+([A-Z0-9]+)",
+      "replacement": "Schedule \\1"
+    }
+  ]
+}
