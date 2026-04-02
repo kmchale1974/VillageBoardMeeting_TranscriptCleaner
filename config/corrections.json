@@ -1,21 +1,26 @@
 {
   "text_replacements": {
     "Palmer": "Palmiter",
-    "Romeovile": "Romeoville",
-    "Romoville": "Romeoville",
     "Noack": "Noak",
     "Vogler": "Vogel",
-    "Geary": "Aguirre",
+    "Royals": "Romeoville",
+    "Romoville": "Romeoville",
+    "Romeovile": "Romeoville",
     "Gary": "Aguirre",
-    "Fruitville": "Aguirre",
-    "Royals": "Romeoville"
+    "Geary": "Aguirre",
+    "Fruitville": "Aguirre"
   },
-  "vote_replacements": {
-    "I": "Aye",
-    "Eye": "Aye",
-    "A": "Aye",
-    "Hi": "Aye",
-    "Na": "Nay",
-    "Nah": "Nay"
-  }
+  "vote_words": {
+    "i": "Aye",
+    "eye": "Aye",
+    "a": "Aye",
+    "hi": "Aye",
+    "nah": "Nay",
+    "na": "Nay"
+  },
+  "group_triggers": [
+    "i pledge allegiance",
+    "applause",
+    "laughter"
+  ]
 }
