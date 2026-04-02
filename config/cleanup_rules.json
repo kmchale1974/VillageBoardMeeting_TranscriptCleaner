@@ -1,0 +1,10 @@
+{
+  "capitalize_titles": true,
+  "fix_punctuation": true,
+  "fix_vote_words": true,
+  "normalize_group_speaker": true,
+  "normalize_motion_language": true,
+  "normalize_second_language": true,
+  "preserve_timestamps": true,
+  "preserve_row_order": true
+}
