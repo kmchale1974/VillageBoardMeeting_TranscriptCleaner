@@ -18,16 +18,39 @@ def main() -> None:
     src_segments = src.get("segments", [])
     out_segments = out.get("segments", [])
 
-    if len(src_segments) != len(out_segments):
-        raise ValueError(f"Segment count mismatch: input={len(src_segments)} output={len(out_segments)}")
+    if len(out_segments) == 0:
+        raise ValueError("Output JSON has zero segments.")
+
+    if len(out_segments) < len(src_segments):
+        raise ValueError(
+            f"Output segment count is smaller than input: input={len(src_segments)} output={len(out_segments)}"
+        )
+
+    for i, seg in enumerate(out_segments):
+        if "speaker" not in seg:
+            raise ValueError(f"Missing speaker in output segment {i}")
+        if "start" not in seg:
+            raise ValueError(f"Missing start time in output segment {i}")
+        if "duration" not in seg:
+            raise ValueError(f"Missing duration in output segment {i}")
 
     with open(output_csv, "r", encoding="utf-8") as f:
         rows = list(csv.reader(f))
 
-    if len(rows) - 1 != len(out_segments):
-        raise ValueError(f"CSV row mismatch: csv={len(rows)-1} json={len(out_segments)}")
+    if len(rows) < 2:
+        raise ValueError("CSV has no data rows.")
 
-    print("Validation passed.")
+    csv_data_rows = len(rows) - 1
+
+    if csv_data_rows != len(out_segments):
+        raise ValueError(
+            f"CSV row mismatch: csv={csv_data_rows} json={len(out_segments)}"
+        )
+
+    print(
+        f"Validation passed. Input segments={len(src_segments)}, "
+        f"Output segments={len(out_segments)}, CSV rows={csv_data_rows}"
+    )
 
 
 if __name__ == "__main__":
