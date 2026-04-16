@@ -24,20 +24,6 @@ def load_config(config_dir: str) -> tuple[dict, dict]:
     return officials, corrections
 
 
-def visible_words(segment: dict) -> list[dict]:
-    out = []
-    for w in segment.get("words", []):
-        if w.get("type") != "word":
-            continue
-        if "disfluency" in w.get("tags", []):
-            continue
-        txt = str(w.get("text", "")).strip()
-        if txt == "":
-            continue
-        out.append(w)
-    return out
-
-
 def visible_word_indices(segment: dict) -> list[int]:
     idxs = []
     for i, w in enumerate(segment.get("words", [])):
@@ -50,6 +36,10 @@ def visible_word_indices(segment: dict) -> list[int]:
             continue
         idxs.append(i)
     return idxs
+
+
+def visible_words(segment: dict) -> list[dict]:
+    return [segment["words"][i] for i in visible_word_indices(segment)]
 
 
 def segment_text_from_words(segment: dict) -> str:
@@ -96,6 +86,12 @@ def title_caps(text: str) -> str:
     return text
 
 
+def apply_phrase_replacements(text: str, replacements: dict[str, str]) -> str:
+    for wrong, correct in replacements.items():
+        text = re.sub(re.escape(wrong), correct, text, flags=re.IGNORECASE)
+    return text
+
+
 def apply_text_replacements(text: str, replacements: dict[str, str]) -> str:
     for wrong, correct in replacements.items():
         text = re.sub(rf"\b{re.escape(wrong)}\b", correct, text, flags=re.IGNORECASE)
@@ -113,9 +109,53 @@ def normalize_motion_text(text: str) -> str:
     return text
 
 
-def normalize_legislative_numbers(text: str) -> str:
-    text = re.sub(r"(?i)\b(Resolution|Ordinance|Proclamation)\s+26\s*[, ]\s*(\d{4})\b", r"\1 26-\2", text)
-    text = re.sub(r"(?i)\b(Resolution|Ordinance|Proclamation)\s+26\s+(\d{4})\b", r"\1 26-\2", text)
+def normalize_labeled_numbers(text: str) -> str:
+    # Resolution 2641 97 -> Resolution 26-4197
+    text = re.sub(
+        r"(?i)\b(Resolution|Ordinance|Proclamation|Schedule)\s+(\d{4})[\s,.-]+(\d{2})\b",
+        lambda m: f"{m.group(1).title()} 26-{m.group(2)[2:]}{m.group(3)}",
+        text,
+    )
+
+    # Resolution 264197 -> Resolution 26-4197
+    text = re.sub(
+        r"(?i)\b(Resolution|Ordinance|Proclamation|Schedule)\s+(26\d{4})\b",
+        lambda m: f"{m.group(1).title()} 26-{m.group(2)[2:]}",
+        text,
+    )
+
+    # Resolution 26 4197 / 26, 4197 -> Resolution 26-4197
+    text = re.sub(
+        r"(?i)\b(Resolution|Ordinance|Proclamation|Schedule)\s+26[\s,.-]+(\d{4})\b",
+        lambda m: f"{m.group(1).title()} 26-{m.group(2)}",
+        text,
+    )
+
+    return text
+
+
+def normalize_bare_26_numbers(text: str) -> str:
+    # 2641 97 -> 26-4197
+    text = re.sub(
+        r"\b(26\d{2})[\s,.-]+(\d{2})\b",
+        lambda m: f"26-{m.group(1)[2:]}{m.group(2)}",
+        text,
+    )
+
+    # 264197 -> 26-4197
+    text = re.sub(
+        r"\b(26\d{4})\b",
+        lambda m: f"26-{m.group(1)[2:]}",
+        text,
+    )
+
+    # 26 4197 / 26, 4197 -> 26-4197
+    text = re.sub(r"\b26[\s,.-]+(\d{4})\b", r"26-\1", text)
+
+    return text
+
+
+def normalize_legislative_labels(text: str) -> str:
     text = re.sub(r"(?i)\bresolution\b", "Resolution", text)
     text = re.sub(r"(?i)\bordinance\b", "Ordinance", text)
     text = re.sub(r"(?i)\bproclamation\b", "Proclamation", text)
@@ -169,14 +209,12 @@ def apply_rollcall_cleanup_to_words(segment: dict, corrections: dict) -> tuple[d
         original = str(seg["words"][idx].get("text", ""))
         cleaned = original
 
-        # Safe surname fixes in roll call only
         cleaned = re.sub(r"(?i)^palmer([.,?!]?)$", r"Palmiter\1", cleaned)
         cleaned = re.sub(r"(?i)^gary([.,?!]?)$", r"Aguirre\1", cleaned)
         cleaned = re.sub(r"(?i)^geary([.,?!]?)$", r"Aguirre\1", cleaned)
         cleaned = re.sub(r"(?i)^carry([.,?!]?)$", r"Aguirre\1", cleaned)
         cleaned = re.sub(r"(?i)^mcgarry([.,?!]?)$", r"Aguirre\1", cleaned)
 
-        # Vote word fixes only for isolated tokens
         if is_vote_word(cleaned, corrections):
             cleaned = normalize_vote_token(cleaned, corrections)
 
@@ -220,10 +258,18 @@ def sync_segment_words_to_text(segment: dict, cleaned_text: str) -> dict:
     return seg
 
 
-def clean_text_for_segment(text: str, previous_text: str, two_back_text: str, corrections: dict, in_rollcall: bool) -> str:
+def clean_text_for_segment(text: str, corrections: dict) -> str:
+    text = apply_phrase_replacements(text, corrections.get("phrase_replacements", {}))
     text = apply_text_replacements(text, corrections.get("text_replacements", {}))
     text = normalize_motion_text(text)
-    text = normalize_legislative_numbers(text)
+    text = normalize_legislative_labels(text)
+    text = normalize_labeled_numbers(text)
+    text = normalize_bare_26_numbers(text)
+
+    # Cleanup after number normalization
+    text = re.sub(r"\b(Village of Romeoville) of Romeoville\b", r"\1", text, flags=re.IGNORECASE)
+    text = re.sub(r"\b(p\.m\.|a\.m\.)\.+", r"\1", text, flags=re.IGNORECASE)
+
     text = normalize_whitespace(text)
     text = title_caps(text)
     text = sentence_case(text)
@@ -237,7 +283,7 @@ def clean_text_for_segment(text: str, previous_text: str, two_back_text: str, co
     return text
 
 
-def build_v31(data: dict, corrections: dict) -> tuple[dict, list[dict], list[str]]:
+def build_v32(data: dict, corrections: dict) -> tuple[dict, list[dict], list[str]]:
     segments = data.get("segments", [])
     cleaned_segments = []
     correction_log = []
@@ -245,7 +291,7 @@ def build_v31(data: dict, corrections: dict) -> tuple[dict, list[dict], list[str
 
     in_rollcall = False
 
-    for i, seg in enumerate(segments):
+    for seg in segments:
         original_text = segment_text_from_words(seg)
         working_seg = deepcopy(seg)
 
@@ -257,16 +303,13 @@ def build_v31(data: dict, corrections: dict) -> tuple[dict, list[dict], list[str
             correction_log.extend(rc_log)
 
         current_text = segment_text_from_words(working_seg)
-        prev_text = segment_text_from_words(cleaned_segments[i - 1]) if i > 0 and i - 1 < len(cleaned_segments) else ""
-        two_back_text = segment_text_from_words(cleaned_segments[i - 2]) if i > 1 and i - 2 < len(cleaned_segments) else ""
-
-        cleaned_text = clean_text_for_segment(current_text, prev_text, two_back_text, corrections, in_rollcall)
+        cleaned_text = clean_text_for_segment(current_text, corrections)
         final_seg = sync_segment_words_to_text(working_seg, cleaned_text)
 
-        if cleaned_text != original_text and not any(
-            entry.get("start") == seg.get("start", 0) and entry.get("original") == original_text
-            for entry in correction_log
-        ):
+        if detect_group_from_text(cleaned_text, corrections.get("group_triggers", [])):
+            pass
+
+        if cleaned_text != original_text:
             correction_log.append({
                 "start": seg.get("start", 0),
                 "speaker": seg.get("speaker", ""),
@@ -301,7 +344,7 @@ def main() -> None:
     data = load_json(input_json)
     _, corrections = load_config(config_dir)
 
-    cleaned_data, correction_log, error_report = build_v31(data, corrections)
+    cleaned_data, correction_log, error_report = build_v32(data, corrections)
 
     save_json(output_json, cleaned_data)
     save_json(correction_log_json, correction_log)
@@ -313,7 +356,7 @@ def main() -> None:
         else:
             f.write("No errors flagged.\n")
 
-    print("V3.1 cleaning complete.")
+    print("V3.2 cleaning complete.")
 
 
 if __name__ == "__main__":
