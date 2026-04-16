@@ -27,5 +27,32 @@
     "i pledge allegiance",
     "applause",
     "laughter"
-  ]
+  ],
+  "rollcall_start_patterns": [
+    "roll call please",
+    "can i get a roll call",
+    "please call the roll",
+    "call the roll"
+  ],
+  "rollcall_end_patterns": [
+    "motion carries",
+    "motion carried",
+    "motion denied",
+    "motion failed",
+    "motion passes",
+    "motion approved",
+    "hearing none"
+  ],
+  "trustee_names": {
+    "palmiter": "Village Trustee Linda Palmiter",
+    "chavez": "Village Trustee Jose (Joe) Chavez",
+    "clancy": "Village Trustee Brian A. Clancy Sr.",
+    "richards": "Village Trustee Dave Richards",
+    "griffin": "Village Trustee Ken Griffin",
+    "aguirre": "Village Trustee Lourdes (Lou) Aguirre",
+    "gary": "Village Trustee Lourdes (Lou) Aguirre",
+    "geary": "Village Trustee Lourdes (Lou) Aguirre",
+    "carry": "Village Trustee Lourdes (Lou) Aguirre",
+    "mcgarry": "Village Trustee Lourdes (Lou) Aguirre"
+  }
 }
