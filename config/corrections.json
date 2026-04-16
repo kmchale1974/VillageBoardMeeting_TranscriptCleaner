@@ -13,15 +13,30 @@
     "Fruitville": "Aguirre",
     "Carry": "Aguirre",
     "McGarry": "Aguirre",
-    "Fowlerville": "Valley View"
+    "Fowlerville": "Valley View",
+    "Dino": "D. Noak",
+    "Royal": "Romeoville",
+    "Roma": "Romeoville"
+  },
+  "phrase_replacements": {
+    "Village Removals": "Village of Romeoville",
+    "Village Royal": "Village of Romeoville",
+    "Village Romeoville": "Village of Romeoville",
+    "John Dino": "John D. Noak",
+    "blue bill": "bluebell",
+    "Conservation Sustainability Commission": "Conservation and Sustainability Committee",
+    "Kangaroo plans": "Clerk, call the roll please"
   },
   "vote_words": {
     "i": "Aye",
     "eye": "Aye",
     "a": "Aye",
     "hi": "Aye",
+    "aye": "Aye",
     "nah": "Nay",
-    "na": "Nay"
+    "na": "Nay",
+    "nay": "Nay",
+    "here": "Here"
   },
   "group_triggers": [
     "i pledge allegiance",
@@ -41,6 +56,7 @@
     "motion failed",
     "motion passes",
     "motion approved",
+    "the ayes have it",
     "hearing none"
   ],
   "trustee_names": {
